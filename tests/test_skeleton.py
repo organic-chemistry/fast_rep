@@ -1,6 +1,6 @@
 import pytest
 
-from fast_mrt.skeleton import fib, main
+from fast_rep.skeleton import fib, main
 
 __author__ = "Arbona"
 __copyright__ = "Arbona"

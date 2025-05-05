@@ -99,7 +99,7 @@ copyright = "2025, Arbona"
 # If you don’t need the separation provided between version and release,
 # just set them both to the same value.
 try:
-    from fast_mrt import __version__ as version
+    from fast_rep import __version__ as version
 except ImportError:
     version = ""
 

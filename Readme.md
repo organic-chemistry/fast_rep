@@ -60,7 +60,14 @@ Create synthetic data by fitting chrI from yeast.
 mode=MAP
 model="Weibull"
 
-fit_rfd_ori data/from_nfs_smv11.bed synthetic/chr1_fit.bed 2500 20 --regions chrI --fit-mode $mode --model-type $model
+fit_rfd_ori data/from_nfs_smv11.bed synthetic/chr1_fit.bed 2500 20 --regions chrI --fit-mode $mode --model-type $model --fit-time 
+fit_rfd_ori data/from_nfs_smv11.bed synthetic/chr1_fit-no-time.bed 2500 20 --regions chrI --fit-mode $mode --model-type $model
+
+model="Exponential"
+fit_rfd_ori data/from_nfs_smv11.bed synthetic/chr1_fit.bed 2500 20 --regions chrI --fit-mode $mode --model-type $model --fit-time 
+fit_rfd_ori data/from_nfs_smv11.bed synthetic/chr1_fit-no-time.bed 2500 20 --regions chrI --fit-mode $mode --model-type $model
+
+
 #visualisation of the fit:
 visu_bed --chromosome chrI --start 0 --end 249000 --blocks "synthetic/chr1_fit.bed:original_rfd,synthetic/chr1_fit.bed:theo_rfd" --output compare.html
 #visu firefor compare.html
@@ -71,7 +78,8 @@ Bayesian fitting of the synthetic data.
 # then run the analysis on the synthetic data
 model="Weibull"
 fit_time="True"
-bayesian_fit --input synthetic/chr1_fit.bed --regions chr1 --mode $mode --noise 0.075 --model $model --fit-time $fit_time --output synthetic/$model_$fit_time_bayesian.bed
+bayesian synthetic/chr1_fit.bed analysis_models/${model}_${fit_time}_bayesian 2500 20  --regions chr1 --fit-mode $mode --noise 0.075 --model $model --fit-time  
+
 ```
 
 

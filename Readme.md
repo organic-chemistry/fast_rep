@@ -78,7 +78,7 @@ Bayesian fitting of the synthetic data.
 # then run the analysis on the synthetic data
 model="Weibull"
 fit_time="True"
-bayesian synthetic/chr1_fit.bed test/${model}_${fit_time}_bayesian 2500 20 --signal_to_fit theo_rfd --regions chr1 --fit-mode $mode --noise 0.075 --model-type $model --fit-time  
+bayesian synthetic/chr1_fit.bed test/${model}_${fit_time}_bayesian 2500 20 --signal-to-fit theo_rfd --regions chr1 --fit-mode $mode --noise 0.075 --model-type $model --fit-time  
 
 ```
 

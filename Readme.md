@@ -24,6 +24,7 @@ cd jax_advi
 pip install -e .
 ```
 
+
 For cuda and fit_ori tool only:
 ===========
 ```bash
@@ -35,10 +36,18 @@ pip install --upgrade "jax[cuda]" -f https://storage.googleapis.com/jax-releases
 
 
 
-Reproducing on experiment on the synthetic data:
+Example of notebook to fit data
+==============================
+[Fit rfd](notebooks/bayesian/fit-experimental-rfd.ipynb)
+[Bayesian fit](notebooks/bayesian/baeysian_ori.ipynb)
+[Using output from command line (example)](notebooks/bayesian/Compare-MAP-Laplace-ADVI.ipynb)
+
+
+
+Reproducing one experiment on the synthetic data at the command line:
 ==============================
 
-Create synthetic data by fitting chrI from yeast
+Create synthetic data by fitting chrI from yeast.
 ```bash
 #first fit the experimental data to produce a synthetic rfd relevant to yeast forkspeed 2500 bp/min S-phase 20 minutes
 mode=MAP
@@ -50,8 +59,7 @@ visu_bed --chromosome chrI --start 0 --end 249000 --blocks "synthetic/chr1_fit.b
 #visu firefor compare.html
 ```
 
-Create synthetic data by fitting chrI from yeast
-
+Bayesian fitting of the synthetic data.
 ```bash
 # then run the analysis on the synthetic data
 model="Weibull"

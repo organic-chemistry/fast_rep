@@ -115,8 +115,8 @@ def fit_at_pos(
     )
 
 
-    best_params= {"kis":jnp.mean(result["draws"]["kis"],axis=0),
-                "kis_std":jnp.std(result["draws"]["kis"],axis=0)}
+    best_params= {"kis":np.mean(result["draws"]["kis"],axis=0),
+                "kis_std":np.std(result["draws"]["kis"],axis=0)}
     if use_extra_t:
         best_params["extra_t"] = jnp.mean(result["draws"]["extra_t"],axis=0)
         best_params["extra_t"] -= jnp.min(best_params["extra_t"])

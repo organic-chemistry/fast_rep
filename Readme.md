@@ -13,6 +13,8 @@ Install
 =========
 
 ```bash
+mamba create -c conda-forge --name fast_rep_cpu  python jax optax plotly numpy scipy click typer
+mamba activate fast_rep_cpu
 git clone https://github.com/organic-chemistry/fast_rep.git
 cd fast_rep
 pip install -e .
@@ -30,21 +32,6 @@ pip install -e .
 pip install --upgrade chex optax plotly
 pip install --upgrade "jax[cuda]" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
 ```
-
-
-Usage for fixed origin positionning.
-==============================
-mode can be MAP or ADVI
-
-fit_rfd_ori --regions chr1:0-15000000 --mode MAP
-
-This will return a bed file with the original rfd as well as the value of the origins, a column that say which position is an origin, the delay, fitted rfd , fitted mrt 
-
-
-
-Usage for finding optimum number of origins.
-==============================
-bayesian_fit --regions chr1:0-15000000 --mode Laplace
 
 
 

@@ -14,6 +14,8 @@ import jax.numpy as jnp
 import numpy as np
 
 
+
+
 def generate_shapes_and_constraints(n_ori,use_qi,use_extra_t):
     e=1e-10
     theta_shapes = {'kis': (n_ori,)}
@@ -28,6 +30,8 @@ def generate_shapes_and_constraints(n_ori,use_qi,use_extra_t):
         theta_shapes['extra_t'] = (n_ori,)
         theta_constraints['extra_t'] = constrain_exp
     return theta_shapes,theta_constraints
+
+
 
 
 def generate_shapes_and_constraintso(n_ori,use_qi,use_extra_t):

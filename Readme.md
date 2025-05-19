@@ -11,9 +11,9 @@ It also contains an implementation of the mathematical model on a fix grid. It c
 
 Install
 =========
-
+Does not work with newer scipy version...
 ```bash
-mamba create -c conda-forge --name fast_rep_cpu  python jax optax plotly numpy scipy click typer
+mamba create -c conda-forge --name fast_rep_cpu  python jax jaxlib optax plotly numpy scipy=1.11.2 click typer pandas
 mamba activate fast_rep_cpu
 git clone https://github.com/organic-chemistry/fast_rep.git
 cd fast_rep
@@ -98,19 +98,19 @@ Full genome analysis
 # then run the analysis on the synthetic data
 XLA_FLAGS='--xla_force_host_platform_device_count=4'
 model="Weibull"
-parallel="--parallel"   # one 'xla' device per chromosome
+
 fit_time="True"
-bayesian  data/from_nfs_smv11.bed full-genome/Laplace-${model}_${fit_time}_bayesian.bed 2500 20 --fit-mode Laplace --model-type $model --fit-time --smoothv 19
+bayesian  data/from_nfs_smv11.bed full-genome/Laplace-${model}_${fit_time}_bayesian.bed 2500 20 --fit-mode Laplace --model-type $model --fit-time --smoothv 19  
 
 fit_time="False"
-bayesian  data/from_nfs_smv11.bed full-genome/Laplace-${model}_${fit_time}_bayesian.bed 2500 20 --fit-mode Laplace --model-type $model  --smoothv 19
+bayesian  data/from_nfs_smv11.bed full-genome/Laplace-${model}_${fit_time}_bayesian.bed 2500 20 --fit-mode Laplace --model-type $model  --smoothv 19  
 
 model="Exponential"
 fit_time="True"
-bayesian  data/from_nfs_smv11.bed full-genome/Laplace-${model}_${fit_time}_bayesian.bed 2500 20 --fit-mode Laplace --model-type $model --fit-time --smoothv 19
+bayesian  data/from_nfs_smv11.bed full-genome/Laplace-${model}_${fit_time}_bayesian.bed 2500 20 --fit-mode Laplace --model-type $model --fit-time --smoothv 19  
 
 fit_time="False"
-bayesian  data/from_nfs_smv11.bed full-genome/Laplace-${model}_${fit_time}_bayesian.bed 2500 20 --fit-mode Laplace  --model-type $model  --smoothv 19
+bayesian  data/from_nfs_smv11.bed full-genome/Laplace-${model}_${fit_time}_bayesian.bed 2500 20 --fit-mode Laplace  --model-type $model  --smoothv 19  
 #see notebooks/bayesian/Compare-MAP-Laplace-ADVI.ipynb for analysis and comparison
 
 ```

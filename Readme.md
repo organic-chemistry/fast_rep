@@ -11,6 +11,7 @@ It also contains an implementation of the mathematical model on a fix grid. It c
 
 Install
 =========
+# CPU
 Does not work with newer scipy version...
 ```bash
 mamba create -c conda-forge --name fast_rep_cpu  python jax jaxlib optax plotly numpy scipy=1.11.2 click typer pandas
@@ -25,8 +26,7 @@ pip install -e .
 ```
 
 
-For cuda and fit_ori tool only:
-===========
+### For cuda and fit_ori tool only (not recommended):
 ```bash
 mamba env create -f environment.yml
 pip install -e .
@@ -38,14 +38,21 @@ pip install --upgrade "jax[cuda]" -f https://storage.googleapis.com/jax-releases
 
 Example of notebook to fit data
 ==============================
+Simple fit:
 [Fit rfd](notebooks/bayesian/fit-experimental-rfd.ipynb)
+
+Bayesian fit on synthetic data:
 [Bayesian fit](notebooks/bayesian/baeysian_ori.ipynb)
+
+
 [Using output from command line (example)](notebooks/bayesian/Compare-MAP-Laplace-ADVI.ipynb)
 
 
 
-Reproducing one experiment on the synthetic data at the command line:
+Reproducing Experiments
 ==============================
+
+## Reproducing one experiment on the synthetic data at the command line:
 
 Create synthetic data by fitting chrI from yeast.
 ```bash
@@ -68,8 +75,7 @@ bayesian_fit --input synthetic/chr1_fit.bed --regions chr1 --mode $mode --noise 
 ```
 
 
-Comparing MAP Laplace ADVI
-==============================
+## Comparing MAP Laplace ADVI
 
 ```bash
 # then run the analysis on the synthetic data
@@ -99,8 +105,7 @@ bayesian  data/from_nfs_smv11.bed comparison/comp_ADVI-${model}_${fit_time}_baye
 ```
 
 
-Full genome analysis
-==============================
+## Full genome analysis
 
 ```bash
 # then run the analysis on the synthetic data

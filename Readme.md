@@ -77,6 +77,8 @@ bayesian_fit --input synthetic/chr1_fit.bed --regions chr1 --mode $mode --noise 
 
 ## Comparing MAP Laplace ADVI
 
+see [compare-MAP-Laplace-ADVI.sh](compare-MAP-Laplace-ADVI.sh) for the full combination of models.
+Here is an example:
 ```bash
 # then run the analysis on the synthetic data
 model="Weibull"
@@ -85,27 +87,15 @@ bayesian  data/from_nfs_smv11.bed comparison/comp_MAP-${model}_${fit_time}_bayes
 bayesian  data/from_nfs_smv11.bed comparison/comp_Laplace-${model}_${fit_time}_bayesian.bed 2500 20 --fit-mode Laplace --regions chrI --model-type $model --fit-time --smoothv 19
 bayesian  data/from_nfs_smv11.bed comparison/comp_ADVI-${model}_${fit_time}_bayesian.bed 2500 20 --fit-mode ADVI --regions chrI --model-type $model --fit-time --smoothv 19
 
-fit_time="False"
-bayesian  data/from_nfs_smv11.bed comparison/comp_MAP-${model}_${fit_time}_bayesian.bed 2500 20 --fit-mode MAP --regions chrI --model-type $model  --smoothv 19
-bayesian  data/from_nfs_smv11.bed comparison/comp_Laplace-${model}_${fit_time}_bayesian.bed 2500 20 --fit-mode Laplace --regions chrI --model-type $model  --smoothv 19
-bayesian  data/from_nfs_smv11.bed comparison/comp_ADVI-${model}_${fit_time}_bayesian.bed 2500 20 --fit-mode ADVI --regions chrI --model-type $model --smoothv 19
-
-model="Exponential"
-fit_time="True"
-bayesian  data/from_nfs_smv11.bed comparison/comp_MAP-${model}_${fit_time}_bayesian.bed 2500 20 --fit-mode MAP --regions chrI --model-type $model --fit-time --smoothv 19
-bayesian  data/from_nfs_smv11.bed comparison/comp_Laplace-${model}_${fit_time}_bayesian.bed 2500 20 --fit-mode Laplace --regions chrI --model-type $model --fit-time --smoothv 19
-bayesian  data/from_nfs_smv11.bed comparison/comp_ADVI-${model}_${fit_time}_bayesian.bed 2500 20 --fit-mode ADVI --regions chrI --model-type $model --fit-time --smoothv 19
-
-fit_time="False"
-bayesian  data/from_nfs_smv11.bed comparison/comp_MAP-${model}_${fit_time}_bayesian.bed 2500 20 --fit-mode MAP --regions chrI --model-type $model  --smoothv 19
-bayesian  data/from_nfs_smv11.bed comparison/comp_Laplace-${model}_${fit_time}_bayesian.bed 2500 20 --fit-mode Laplace --regions chrI --model-type $model  --smoothv 19
-bayesian  data/from_nfs_smv11.bed comparison/comp_ADVI-${model}_${fit_time}_bayesian.bed 2500 20 --fit-mode ADVI --regions chrI --model-type $model --smoothv 19
 #see notebooks/bayesian/Compare-MAP-Laplace-ADVI.ipynb for analysis and comparison
 
 ```
-
+see [Using output from command line (example)](notebooks/bayesian/Compare-MAP-Laplace-ADVI.ipynb) for analysis and comparison
 
 ## Full genome analysis
+
+see [full-genome.sh](full-genome.sh) to run it chromosome by chromosome (And eventually in parallel).
+
 
 ```bash
 # then run the analysis on the synthetic data

@@ -13,16 +13,21 @@ Install
 =========
 
 ```bash
-git clone 
-mamba env create -f environment.yml
+git clone https://github.com/organic-chemistry/fast_rep.git
+cd fast_rep
 pip install -e .
-pip install --upgrade chex optax plotly
 cd ..
 git clone -b different-guides  https://github.com/organic-chemistry/jax_advi.git
 cd jax_advi
 pip install -e .
+```
 
+For cuda and fit_ori tool only:
+===========
 ```bash
+mamba env create -f environment.yml
+pip install -e .
+pip install --upgrade chex optax plotly
 pip install --upgrade "jax[cuda]" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
 ```
 
@@ -39,8 +44,7 @@ This will return a bed file with the original rfd as well as the value of the or
 
 Usage for finding optimum number of origins.
 ==============================
-bayesian_fit --regions chr1:0-15000000 --mode MAP
-
+bayesian_fit --regions chr1:0-15000000 --mode Laplace
 
 
 
@@ -105,7 +109,9 @@ Full genome analysis
 
 ```bash
 # then run the analysis on the synthetic data
+XLA_FLAGS='--xla_force_host_platform_device_count=4'
 model="Weibull"
+parallel="--parallel"   # one 'xla' device per chromosome
 fit_time="True"
 bayesian  data/from_nfs_smv11.bed full-genome/Laplace-${model}_${fit_time}_bayesian.bed 2500 20 --fit-mode Laplace --model-type $model --fit-time --smoothv 19
 

@@ -26,6 +26,9 @@ from fast_rep.rfd_tools import find_ori_position,convert_RFD_delta_MRT
 from fast_rep.bayesian_optim import fit_at_pos_using_map_as_starting_point,estimate_n_ori
 import pickle
 
+import click
+from typing import Annotated
+
 app = typer.Typer()
 
 
@@ -63,15 +66,15 @@ def fit_origins(
         "RFD", 
         help="signal to fit in the bed"
     ),
-    fit_mode: str = typer.Option(
-        "ADVI", 
-        help="Fit mode (ADVI/MAP/Laplace)"
-    ),
+    fit_mode: Annotated[str, typer.Option(click_type=click.Choice(["MAP","Laplace","ADVI"]),
+                                            help="Type of fitting")
+                                            ] = "Laplace" ,
+                
     prior_qis: float = typer.Option(None, help="Prior variance for qis parameters"),
-    model_type: str = typer.Option(
-        "Exponential", 
-        help="Replication timing model (Exponential/Weibull)"
-    ),
+    #model_type: Annotated[str, typer.Option(click_type=click.Choice(['1PL', '2PL', '3PL']))] = '1PL' , 
+    model_type: Annotated[str, typer.Option(click_type=click.Choice(["Exponential","Weibull"]),
+                                            help="Replication timing model (Exponential/Weibull)")
+                                            ] = "Exponential" ,
     delta: int = typer.Option(  15,
         help="Subsampling of rfd data"
     ),
@@ -174,6 +177,8 @@ def fit_origins(
             inv_prior_on_extra_t0 = sphase/prior_extra_t
 
         print(inv_prior_on_extra_t0)
+        dump_file = output_file.replace(".bed","-") + key + ".pickle"
+        
   
         results = estimate_n_ori(
              Ori_pos=Ori_pos,
@@ -190,7 +195,6 @@ def fit_origins(
             mode=fit_mode,
             independent=False
         )
-        dump_file = output_file.replace(".bed","-") + key + ".pickle"
         with open(dump_file,"wb") as dump_f:
             pickle.dump(results,dump_f)
         signals = {}

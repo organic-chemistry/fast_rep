@@ -23,8 +23,12 @@ import inspect
 from fast_rep.rfd_tools import find_ori_position,convert_RFD_delta_MRT
 from fast_rep.bayesian_optim import fit_at_pos_using_map_as_starting_point
 
+import click
+from typing import Annotated
 
 app = typer.Typer()
+
+#class MT:
 
 
 @app.command()
@@ -53,15 +57,16 @@ def fit_origins(
     # Model fitting parameters
     prior_lambda: float = typer.Option(2.0, help="Prior variance for lambda parameter in S phase relation-ship"),
     prior_extra_t: float = typer.Option(4.0, help="Prior variance for extra time in S phase relation-ship"),
-    fit_mode: str = typer.Option(
-        "ADVI", 
-        help="Fit mode (ADVI/MAP)"
-    ),
+    fit_mode: Annotated[str, typer.Option(click_type=click.Choice(["MAP","Laplace","ADVI"]),
+                                            help="Type of fitting")
+                                            ] = "Laplace" ,
+                
     prior_qis: float = typer.Option(None, help="Prior variance for qis parameters"),
-    model_type: str = typer.Option(
-        "Exponential", 
-        help="Replication timing model (Exponential/Weibull)"
-    ),
+    #model_type: Annotated[str, typer.Option(click_type=click.Choice(['1PL', '2PL', '3PL']))] = '1PL' , 
+    model_type: Annotated[str, typer.Option(click_type=click.Choice(["Exponential","Weibull"]),
+                                            help="Replication timing model (Exponential/Weibull)")
+                                            ] = "Exponential" ,
+                
     delta: int = typer.Option(  15,
         help="Subsampling of rfd data"
     ),

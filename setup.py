@@ -20,7 +20,10 @@ if __name__ == "__main__":
             entry_points={
                 "console_scripts": [
                     "fit_rfd = scripts.fit_rfd:app", 
-                    "simulate = scripts.simulate:app"
+                    "fit_rfd_ori = scripts.fit_rfd_ori:app",
+                    "bayesian = scripts.bayesian:app", 
+                    "simulate = scripts.simulate:app",
+                    "visu_bed = scripts.visu_bed:main",
                 ],
     },
               )

@@ -56,7 +56,7 @@ def fit_origins(
     
     # Model fitting parameters
     prior_lambda: float = typer.Option(2.0, help="Prior variance for lambda parameter in S phase relation-ship"),
-    prior_extra_t: float = typer.Option(20.0, help="Prior variance for extra time in S phase relation-ship"),
+    prior_extra_t: float = typer.Option(5.0, help="Prior variance for extra time in S phase relation-ship"),
     fit_mode: Annotated[str, typer.Option(click_type=click.Choice(["MAP","Laplace","ADVI"]),
                                             help="Type of fitting")
                                             ] = "Laplace" ,
@@ -148,14 +148,14 @@ def fit_origins(
         if not fit_time:
             prior_on_extra_t0 = None
         else:
-            prior_on_extra_t0 = 1/(sphase/prior_extra_t)
+            prior_on_extra_t0 = sphase/prior_extra_t
   
 
 
         results = fit_at_pos_using_map_as_starting_point(
             pos_to_compute=pos_to_compute,
             xis=xis,
-            prior_on_lambda=1/(sphase/prior_lambda),
+            prior_on_lambda=sphase/prior_lambda,
             prior_on_extra_t=prior_on_extra_t0,
             prior_on_qis=prior_qis,
             fork_speed=fork_speed,

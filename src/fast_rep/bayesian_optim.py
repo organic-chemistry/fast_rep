@@ -101,6 +101,15 @@ def fit_at_pos(
     
     theta_shapes,theta_constraints = generate_shapes_and_constraints(len(xis),use_qi,use_extra_t)
 
+    f=2
+    if ADVI_P.guide.name in ["MAPGuide","LaplaceApproxGuide"]:
+        f = 1
+    mult = 1 * f
+    if use_extra_t :
+        mult = 2 * f
+    minimize_kwargs["bounds"] = [[-7,2]]*len(xis) * mult  # in log scale
+    #print( minimize_kwargs["bounds"] )
+    #raise
     result = optimize_advi(
         theta_shapes,
         log_prior_fun=curried_prior,

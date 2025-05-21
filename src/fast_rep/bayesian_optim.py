@@ -107,7 +107,9 @@ def fit_at_pos(
     mult = 1 * f
     if use_extra_t :
         mult = 2 * f
-    minimize_kwargs["bounds"] = [[-7,2]]*len(xis) * mult  # in log scale
+
+    h = np.log(100)
+    minimize_kwargs["bounds"] = [[-7,h]]*len(xis) * mult  # in log scale
     #print( minimize_kwargs["bounds"] )
     #raise
     result = optimize_advi(

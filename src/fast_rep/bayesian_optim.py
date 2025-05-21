@@ -95,6 +95,8 @@ def fit_at_pos(
 
     curried_lik = jax.jit(partial(log_lik_fun, data=data, theo = compute_theo_measurement ,sigma = sigma))
 
+    print(prior_on_extra_t)
+    raise
     curried_prior  = jax.jit(partial(log_prior_fun,prior_lambda=prior_on_lambda,prior_qi=prior_on_qis,prior_extra_t=prior_on_extra_t,
                                      use_qi=use_qi,use_extra_t=use_extra_t))
     #Is it better to use regular adam optimiser?
@@ -106,7 +108,7 @@ def fit_at_pos(
     if use_extra_t :
         minimize_kwargs["bounds"] += [[-7,h]]*len(xis) 
 
-    if ADVI_P.guide.name in ["MAPGuide","LaplaceApproxGuide"]:
+    if ADVI_P.guide.name not in ["MAPGuide","LaplaceApproxGuide"]:
         minimize_kwargs["bounds"] += minimize_kwargs["bounds"]
 
 
@@ -211,10 +213,10 @@ def fit_at_pos_using_map_as_starting_point(pos_to_compute,xis,prior_on_lambda,pr
 
 import pickle
 def estimate_n_ori(Ori_pos,model,pos_to_compute,data,sigma,
-                   inv_prior_on_lambda,inv_prior_on_extra_t,S_phase_duration,fork_speed,
+                   prior_on_lambda,prior_on_extra_t,S_phase_duration,fork_speed,
                    measurement_type,verbose=False,independent=False,mode="ADVI"):
     
-    print(Ori_pos,model,pos_to_compute,data,sigma,inv_prior_on_lambda,inv_prior_on_extra_t,S_phase_duration,fork_speed,measurement_type,mode)
+    print(Ori_pos,model,pos_to_compute,data,sigma,prior_on_lambda,prior_on_extra_t,S_phase_duration,fork_speed,measurement_type,mode)
     l = locals()
     #with open("debug.p","wb") as f:
     #    pickle.dump(l,f)
@@ -225,18 +227,18 @@ def estimate_n_ori(Ori_pos,model,pos_to_compute,data,sigma,
     Results = []
 
     fit_time = True
-    if inv_prior_on_extra_t == None:
+    if prior_on_extra_t == None:
         fit_time = False
 
     for xis in Ori_pos:
         n_ori = len(xis)
 
 
-        initial_lambda = jnp.array([1/(inv_prior_on_lambda)] * n_ori)
+        prior_on_lambda = jnp.array([prior_on_lambda] * n_ori)   # These are prior
         if fit_time:
-            init_extra_t = jnp.array([1/inv_prior_on_extra_t]  * n_ori)
+            prior_on_extra_t = jnp.array([prior_on_extra_t]  * n_ori)  # These are prior
         else:
-            init_extra_t = None
+            prior_on_extra_t = None
 
         init_qis = None # jnp.array([0.9]  * n_ori)
         if len(Pos_oris) == 0 or (independent):
@@ -268,7 +270,7 @@ def estimate_n_ori(Ori_pos,model,pos_to_compute,data,sigma,
         Pos_oris = list(xis)
             
         #print(len(xis),len(init_extra_t),len(initial_lambda))
-        r = fit_at_pos_using_map_as_starting_point(pos_to_compute=pos_to_compute,xis=xis,prior_on_lambda=initial_lambda,prior_on_extra_t=init_extra_t,
+        r = fit_at_pos_using_map_as_starting_point(pos_to_compute=pos_to_compute,xis=xis,prior_on_lambda=prior_on_lambda,prior_on_extra_t=prior_on_extra_t,
                                                   prior_on_qis=init_qis,fork_speed=fork_speed,data=data,
                                                   S_phase_duration=S_phase_duration,sigma=sigma,measurement_type=measurement_type,verbose=verbose,
                                                   model=model,mode=mode,starting_points=starting_points)

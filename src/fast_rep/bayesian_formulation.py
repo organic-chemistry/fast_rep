@@ -73,6 +73,7 @@ def weibull_logpdf(x, shape, scale):
     Returns:
         log_pdf: Log probability density at `x`.
     """
+
     # Ensure numerical stability for x <= 0
     safe_x = jnp.where(x > 0, x, 1e-8)  # Avoid log(0) or negative inputs
     
@@ -109,8 +110,8 @@ def log_prior_fun(theta,prior_lambda,prior_qi,prior_extra_t,use_qi=False,use_ext
         #print("Sub")
         #theta['extra_t'] -= jnp.min(theta['extra_t'] )
         #extra 
-        scale_extra_t = prior_extra_t
-        log_prior += jnp.sum(expon.logpdf(theta['extra_t'], scale=scale_extra_t))
+        #scale_extra_t = prior_extra_t
+        log_prior += jnp.sum(expon.logpdf(theta['extra_t'], scale=1/prior_extra_t))
     
     return log_prior
 

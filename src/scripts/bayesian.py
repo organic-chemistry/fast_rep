@@ -172,11 +172,11 @@ def fit_origins(
 
 
         if not fit_time:
-            inv_prior_on_extra_t0 = None
+            prior_on_extra_t0 = None
         else:
-            inv_prior_on_extra_t0 = sphase/prior_extra_t
+            prior_on_extra_t0 = sphase/prior_extra_t
 
-        print(inv_prior_on_extra_t0)
+        #print(inv_prior_on_extra_t0)
 
         dump_file = output_file.replace(".bed","-") + key + ".pickle"
 
@@ -185,8 +185,8 @@ def fit_origins(
             results = estimate_n_ori(
                 Ori_pos=Ori_pos,
                 pos_to_compute=pos_to_compute,
-                inv_prior_on_lambda =sphase/prior_lambda,
-                inv_prior_on_extra_t=inv_prior_on_extra_t0,
+                prior_on_lambda =sphase/prior_lambda,
+                prior_on_extra_t=prior_on_extra_t0,
                 fork_speed=fork_speed,
                 data=data,
                 S_phase_duration=sphase,

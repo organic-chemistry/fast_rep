@@ -195,7 +195,7 @@ def fit_origins(
                 model=model_type,
                 verbose=verbose,
                 mode=fit_mode,
-                independent=False
+                independent=True
             )
             with open(dump_file,"wb") as dump_f:
                 pickle.dump(results,dump_f)

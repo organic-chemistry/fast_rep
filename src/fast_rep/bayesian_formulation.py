@@ -10,6 +10,8 @@ from jax.scipy.stats import norm,beta,expon
 @partial(jax.jit,static_argnames=["model","measurement_type","use_extra_t","use_qi"])
 def compute_theo(params,pos_to_compute,xis,v,measurement_type,use_extra_t,use_qi,regions_indices,resolution,model="Exponential"):
     Lambda = params["kis"]
+    Lambda = jnp.clip(Lambda,1e-7,100)
+
     if use_extra_t:
         extra_t = params["extra_t"]
         extra_t -= jnp.min(extra_t)
@@ -91,6 +93,8 @@ def log_prior_fun(theta,prior_lambda,prior_qi,prior_extra_t,use_qi=False,use_ext
     log_prior = 0.0
     
     kis = theta['kis']
+    kis = jnp.clip(kis,1e-7,100)
+
     # Prior for kis: Weibull(2, init_v[i])
     log_prior += jnp.sum(weibull_logpdf(kis, shape=2, scale=prior_lambda))    
     # Prior for qis: Beta if present

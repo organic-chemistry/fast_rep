@@ -24,7 +24,6 @@ def compute_mrt_exp(pos_to_compute,Lambda, extra_t, xis, v):
     # Compute arrival times for all positions and origins
     #print(xis[None, :].shape,pos_to_compute[:, None].shape)
 
-    Lambda = jnp.clip(Lambda,1e-7,100)
 
     delta_pos = xis[None, :] - pos_to_compute[:, None]
     arrival_time = jnp.abs(delta_pos) / v + extra_t[None, :]
@@ -121,8 +120,7 @@ def compute_mrt_weibull(pos_to_compute,Lambda, extra_t, xis, v):
     sorted_indices = np.argsort(arrival_time, axis=1)
     #sorted_indices = jnp.arange(len(extra_t))[None,:] # jnp.argsort(arrival_time, axis=1)
 
-    return compute_mrt_fast_weibull(sorted_indices,arrival_time,
-                                    jnp.clip(Lambda,1e-7,100))
+    return compute_mrt_fast_weibull(sorted_indices,arrival_time,Lambda)
 
 @jax.jit
 def compute_mrt_fast_weibull(sorted_indices,arrival_time,Lambda):

@@ -12,7 +12,7 @@ for model in Weibull Exponential; do
         fi
 
         # Loop over each chromosome
-        for fit_mode in Laplace; do
+        for fit_mode in MAP; do
             # Construct the output file name with the chromosome
             for data in Weibull_True Weibull_False Exponential_True Exponential_False; do
                 for noise in 0.2 0.1 0.05; do

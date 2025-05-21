@@ -95,7 +95,9 @@ def fit_at_pos(
 
     curried_lik = jax.jit(partial(log_lik_fun, data=data, theo = compute_theo_measurement ,sigma = sigma))
 
-    #print(prior_on_extra_t)
+    print(prior_on_extra_t)
+    print(prior_on_lambda)
+
     
     curried_prior  = jax.jit(partial(log_prior_fun,prior_lambda=prior_on_lambda,prior_qi=prior_on_qis,prior_extra_t=prior_on_extra_t,
                                      use_qi=use_qi,use_extra_t=use_extra_t))
@@ -103,7 +105,7 @@ def fit_at_pos(
     
     theta_shapes,theta_constraints = generate_shapes_and_constraints(len(xis),use_qi,use_extra_t)
 
-    h = np.log(10_000)
+    h = np.log(100)
     minimize_kwargs["bounds"] = [[-7,h]]*len(xis) 
     if use_extra_t :
         minimize_kwargs["bounds"] += [[-7,h]]*len(xis) 
@@ -230,15 +232,16 @@ def estimate_n_ori(Ori_pos,model,pos_to_compute,data,sigma,
     if prior_on_extra_t == None:
         fit_time = False
 
+
     for xis in Ori_pos:
         n_ori = len(xis)
 
 
-        prior_on_lambda = jnp.array([prior_on_lambda] * n_ori)   # These are prior
+        prior_on_lambda0 = jnp.array([prior_on_lambda] * n_ori)   # These are prior
         if fit_time:
-            prior_on_extra_t = jnp.array([prior_on_extra_t]  * n_ori)  # These are prior
+            prior_on_extra_t0 = jnp.array([prior_on_extra_t]  * n_ori)  # These are prior
         else:
-            prior_on_extra_t = None
+            prior_on_extra_t0 = None
 
         init_qis = None # jnp.array([0.9]  * n_ori)
         if len(Pos_oris) == 0 or (independent):
@@ -270,7 +273,7 @@ def estimate_n_ori(Ori_pos,model,pos_to_compute,data,sigma,
         Pos_oris = list(xis)
             
         #print(len(xis),len(init_extra_t),len(initial_lambda))
-        r = fit_at_pos_using_map_as_starting_point(pos_to_compute=pos_to_compute,xis=xis,prior_on_lambda=prior_on_lambda,prior_on_extra_t=prior_on_extra_t,
+        r = fit_at_pos_using_map_as_starting_point(pos_to_compute=pos_to_compute,xis=xis,prior_on_lambda=prior_on_lambda0,prior_on_extra_t=prior_on_extra_t0,
                                                   prior_on_qis=init_qis,fork_speed=fork_speed,data=data,
                                                   S_phase_duration=S_phase_duration,sigma=sigma,measurement_type=measurement_type,verbose=verbose,
                                                   model=model,mode=mode,starting_points=starting_points)

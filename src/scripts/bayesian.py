@@ -58,7 +58,7 @@ def fit_origins(
     ),
     
     # Model fitting parameters
-    prior_lambda: float = typer.Option(2.0, help="Prior variance for lambda parameter in S phase relation-ship"),
+    prior_lambda: float = typer.Option(10.0, help="Prior variance for lambda parameter in S phase relation-ship"),
     prior_extra_t: float = typer.Option(100.0, help="Prior variance for extra time in S phase relation-ship"),
     noise: float = typer.Option(None, help="Add noise on synthetic data"),
 

@@ -55,7 +55,7 @@ def fit_origins(
     ),
     
     # Model fitting parameters
-    prior_lambda: float = typer.Option(20.0, help="Prior variance for lambda parameter in S phase relation-ship"),
+    prior_lambda: float = typer.Option(2.0, help="Prior variance for lambda parameter in S phase relation-ship"),
     prior_extra_t: float = typer.Option(20.0, help="Prior variance for extra time in S phase relation-ship"),
     fit_mode: Annotated[str, typer.Option(click_type=click.Choice(["MAP","Laplace","ADVI"]),
                                             help="Type of fitting")

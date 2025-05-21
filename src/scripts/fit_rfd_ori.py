@@ -223,7 +223,7 @@ def fit_origins(
 
 
     # Write output
-    write_custom_bedgraph_pandas(output_file, RFD,resolution=resolution,meta={"model":model_type,"fork_speed":fork_speed})
+    write_custom_bedgraph_pandas(output_file, RFD,resolution=resolution/1000,meta={"model":model_type,"fork_speed":fork_speed})
 
 if __name__=="__main__":
     app()

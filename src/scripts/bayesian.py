@@ -177,26 +177,31 @@ def fit_origins(
             inv_prior_on_extra_t0 = sphase/prior_extra_t
 
         print(inv_prior_on_extra_t0)
+
         dump_file = output_file.replace(".bed","-") + key + ".pickle"
-        
-  
-        results = estimate_n_ori(
-             Ori_pos=Ori_pos,
-             pos_to_compute=pos_to_compute,
-            inv_prior_on_lambda =sphase/prior_lambda,
-            inv_prior_on_extra_t=inv_prior_on_extra_t0,
-            fork_speed=fork_speed,
-            data=data,
-            S_phase_duration=sphase,
-            sigma=sigma,
-            measurement_type=measurement_type,
-            model=model_type,
-            verbose=verbose,
-            mode=fit_mode,
-            independent=False
-        )
-        with open(dump_file,"wb") as dump_f:
-            pickle.dump(results,dump_f)
+
+        if not os.path.exists(dump_file):
+            
+            results = estimate_n_ori(
+                Ori_pos=Ori_pos,
+                pos_to_compute=pos_to_compute,
+                inv_prior_on_lambda =sphase/prior_lambda,
+                inv_prior_on_extra_t=inv_prior_on_extra_t0,
+                fork_speed=fork_speed,
+                data=data,
+                S_phase_duration=sphase,
+                sigma=sigma,
+                measurement_type=measurement_type,
+                model=model_type,
+                verbose=verbose,
+                mode=fit_mode,
+                independent=False
+            )
+            with open(dump_file,"wb") as dump_f:
+                pickle.dump(results,dump_f)
+        else:
+            with open(dump_file,"rb") as dump_f:
+                results = pickle.load(dump_f)
         signals = {}
 
         #all the

@@ -95,8 +95,8 @@ def fit_at_pos(
 
     curried_lik = jax.jit(partial(log_lik_fun, data=data, theo = compute_theo_measurement ,sigma = sigma))
 
-    print(prior_on_extra_t)
-    raise
+    #print(prior_on_extra_t)
+    
     curried_prior  = jax.jit(partial(log_prior_fun,prior_lambda=prior_on_lambda,prior_qi=prior_on_qis,prior_extra_t=prior_on_extra_t,
                                      use_qi=use_qi,use_extra_t=use_extra_t))
     #Is it better to use regular adam optimiser?

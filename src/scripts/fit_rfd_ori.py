@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from dataclasses import asdict
 import numpy as np
 from typing import List, Tuple
-
+import os
 from fast_rep.interface import compute_mrt_and_derivatives
 from fast_rep.optim_fix_interval import fit_lambdai
 from fast_rep.read_data import  load_RFD_from_bedGraph,write_custom_bedgraph,write_custom_bedgraph_pandas,load_muli_from_bedGraph
@@ -102,6 +102,9 @@ def fit_origins(
         # Add error weighting logic here based on main command
     
     measurement_type = "RFD"
+
+    dir = os.path.split(output_file)[0]
+    os.makedirs(dir,exist_ok=True)
 
     # Prepare output data structure
     origins = []

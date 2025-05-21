@@ -18,7 +18,7 @@ for model in Weibull Exponential; do
                 for noise in 0.2 0.1 0.05
                     common="2500 20  --signal-to-fit theo_rfd --regions chrI"
                     output_file="input${data}_${fit_mode}-${model}_${fit_time}_${noise}_bayesian.bed"
-                    bayesian synthetic/chrI-${data}.bed analysis_models/$output_file $common --fit-mode $fit_mode --noise $noise --model-type $model  $fit_time_arg 
+                    bayesian synthetic/chrI-${data}.bed analysis_models/$output_file $common --fit-mode $fit_mode --noise $noise --model-type $model  $fit_time_arg  & 
                 done
             done
 

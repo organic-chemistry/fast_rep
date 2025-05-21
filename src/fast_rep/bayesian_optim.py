@@ -198,13 +198,15 @@ def fit_at_pos_using_map_as_starting_point(pos_to_compute,xis,prior_on_lambda,pr
     return r
 
 
-
+import pickle
 def estimate_n_ori(Ori_pos,model,pos_to_compute,data,sigma,
                    inv_prior_on_lambda,inv_prior_on_extra_t,S_phase_duration,fork_speed,
                    measurement_type,verbose=False,independent=False,mode="ADVI"):
     
-    print(Ori_pos,model,pos_to_compute,data,sigma,inv_prior_on_lambda,inv_prior_on_extra_t,S_phase_duration,fork_speed,measurement_type)
-
+    print(Ori_pos,model,pos_to_compute,data,sigma,inv_prior_on_lambda,inv_prior_on_extra_t,S_phase_duration,fork_speed,measurement_type,mode)
+    l = locals()
+    #with open("debug.p","wb") as f:
+    #    pickle.dump(l,f)
     #raise
     no = []
     elbos = []

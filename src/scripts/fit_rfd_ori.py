@@ -83,7 +83,7 @@ def fit_origins(
     ),
     parallel: bool = typer.Option(False, help="Enable parallel processing"),
     verbose: bool = typer.Option(True, help="Show detailed output"),
-    fit_time: bool = typer.Option(True, help="fit a delay for origin activation"),
+    fit_time: bool = typer.Option(False, help="fit a delay for origin activation"),
 
 ):
     """

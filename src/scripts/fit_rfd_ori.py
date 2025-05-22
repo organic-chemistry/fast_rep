@@ -141,10 +141,7 @@ def fit_origins(
         #convert data
         
         # Fit origins
-        only_optim=False
-        if fit_mode == "MAP":
-            only_optim = True
-            
+
         if not fit_time:
             prior_on_extra_t0 = None
         else:
@@ -167,7 +164,7 @@ def fit_origins(
             starting_points=starting_points,
             verbose=verbose,
             final_M=final_samples,
-            only_optim=only_optim
+            mode=fit_mode
         )
         
         # Convert results to BED format

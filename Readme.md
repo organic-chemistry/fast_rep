@@ -55,18 +55,14 @@ Reproducing Experiments
 ## Reproducing one experiment on the synthetic data at the command line:
 
 Create synthetic data by fitting chrI from yeast.
+see [workflows/generate-synthetic-data.sh](generate-synthetic-data.sh) for the creating all the needed synthetic models of models.
+
 ```bash
 #first fit the experimental data to produce a synthetic rfd relevant to yeast forkspeed 2500 bp/min S-phase 20 minutes
 mode=MAP
 model="Weibull"
 
 fit_rfd_ori data/from_nfs_smv11.bed synthetic/chr1_fit.bed 2500 20 --regions chrI --fit-mode $mode --model-type $model --fit-time 
-fit_rfd_ori data/from_nfs_smv11.bed synthetic/chr1_fit-no-time.bed 2500 20 --regions chrI --fit-mode $mode --model-type $model
-
-model="Exponential"
-fit_rfd_ori data/from_nfs_smv11.bed synthetic/chr1_fit.bed 2500 20 --regions chrI --fit-mode $mode --model-type $model --fit-time 
-fit_rfd_ori data/from_nfs_smv11.bed synthetic/chr1_fit-no-time.bed 2500 20 --regions chrI --fit-mode $mode --model-type $model
-
 
 #visualisation of the fit:
 visu_bed --chromosome chrI --start 0 --end 249000 --blocks "synthetic/chr1_fit.bed:original_rfd,synthetic/chr1_fit.bed:theo_rfd" --output compare.html
@@ -85,7 +81,7 @@ bayesian synthetic/chr1_fit.bed test/${model}_${fit_time}_bayesian 2500 20 --sig
 
 ## Comparing MAP Laplace ADVI
 
-see [compare-MAP-Laplace-ADVI.sh](compare-MAP-Laplace-ADVI.sh) for the full combination of models.
+see [workflows/compare-MAP-Laplace-ADVI.sh](compare-MAP-Laplace-ADVI.sh) for the full combination of models.
 Here is an example:
 ```bash
 # then run the analysis on the synthetic data
@@ -102,7 +98,7 @@ see [Using output from command line (example)](notebooks/bayesian/Compare-MAP-La
 
 ## Full genome analysis
 
-see [full-genome.sh](full-genome.sh) to run it chromosome by chromosome (And eventually in parallel).
+see [workflows/full-genome.sh](full-genome.sh) to run it chromosome by chromosome (And eventually in parallel).
 
 
 ```bash

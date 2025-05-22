@@ -105,6 +105,7 @@ def fit_at_pos(
     
     theta_shapes,theta_constraints = generate_shapes_and_constraints(len(xis),use_qi,use_extra_t)
 
+    """
     h = np.log(100)
     minimize_kwargs["bounds"] = [[-7,h]]*len(xis) 
     if use_extra_t :
@@ -112,7 +113,7 @@ def fit_at_pos(
 
     if ADVI_P.guide.name not in ["MAPGuide","LaplaceApproxGuide"]:
         minimize_kwargs["bounds"] += minimize_kwargs["bounds"]
-
+    """
 
     #print( minimize_kwargs["bounds"] )
     #raise
@@ -153,8 +154,8 @@ def fit_at_pos(
 
 
 def fit_at_pos_using_map_as_starting_point(pos_to_compute,xis,prior_on_lambda,prior_on_extra_t,prior_on_qis,
-          fork_speed,data,S_phase_duration,sigma,measurement_type,model,starting_points=None,
-          only_optim=False,verbose=True,final_M=50,mode="MAP"):
+          fork_speed,data,S_phase_duration,sigma,measurement_type,model,starting_points=None
+          ,verbose=True,final_M=50,mode="MAP"):
     
     if (not starting_points) or (mode in ["MAP","Laplace"]):
         
@@ -162,6 +163,7 @@ def fit_at_pos_using_map_as_starting_point(pos_to_compute,xis,prior_on_lambda,pr
         if mode == "Laplace":
             G = LaplaceApproxGuide()
         G.init_mean_scale=-2
+        print("LB")
         r= fit_at_pos(
             pos_to_compute=pos_to_compute, # en bp
             xis=xis,
@@ -174,7 +176,7 @@ def fit_at_pos_using_map_as_starting_point(pos_to_compute,xis,prior_on_lambda,pr
             sigma=sigma,
             measurement_type=measurement_type,
             model=model,
-            ADVI_P= ADVI_params(1,"L-BFGS-B",verbose,G),
+            ADVI_P= ADVI_params(1,"trust-ncg",verbose,G),
             minimize_kwargs={"tol":1e-6})
 
         if mode in ["MAP","Laplace"]:

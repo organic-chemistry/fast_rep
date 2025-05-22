@@ -98,6 +98,8 @@ def log_prior_fun(theta,prior_lambda,prior_qi,prior_extra_t,use_qi=False,use_ext
 
     # Prior for kis: Weibull(2, init_v[i])
     log_prior += jnp.sum(weibull_logpdf(kis, shape=2, scale=1/prior_lambda))    
+    #log_prior += jnp.sum(expon.logpdf(kis, scale=1/prior_lambda))
+
     # Prior for qis: Beta if present
     if use_qi:
         f = 10
@@ -111,8 +113,8 @@ def log_prior_fun(theta,prior_lambda,prior_qi,prior_extra_t,use_qi=False,use_ext
         #theta['extra_t'] -= jnp.min(theta['extra_t'] )
         #extra 
         #scale_extra_t = prior_extra_t
-        #log_prior += jnp.sum(expon.logpdf(theta['extra_t'], scale=prior_extra_t))
-        log_prior += jnp.sum(weibull_logpdf(theta['extra_t'], shape=2, scale=prior_extra_t))    
+        log_prior += jnp.sum(expon.logpdf(theta['extra_t'], scale=prior_extra_t))
+        #log_prior += jnp.sum(weibull_logpdf(theta['extra_t'], shape=2, scale=prior_extra_t))    
     
     return log_prior
 

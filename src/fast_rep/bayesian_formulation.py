@@ -111,7 +111,8 @@ def log_prior_fun(theta,prior_lambda,prior_qi,prior_extra_t,use_qi=False,use_ext
         #theta['extra_t'] -= jnp.min(theta['extra_t'] )
         #extra 
         #scale_extra_t = prior_extra_t
-        log_prior += jnp.sum(expon.logpdf(theta['extra_t'], scale=prior_extra_t))
+        #log_prior += jnp.sum(expon.logpdf(theta['extra_t'], scale=prior_extra_t))
+        log_prior += jnp.sum(weibull_logpdf(theta['extra_t'], shape=2, scale=prior_extra_t))    
     
     return log_prior
 

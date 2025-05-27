@@ -12,7 +12,7 @@ for model in Weibull Exponential; do
         # Loop over each chromosome
             # Construct the output file name with the chromosome
         output_file="synthetic/chrI-${model}_${fit_time}.bed"
-        fit_rfd_ori data/from_nfs_smv11.bed $output_file 2500 20 --regions chrI --fit-mode MAP --model-type $model $fit_time_arg
+        fit_rfd_ori data/from_nfs_smv11.bed $output_file 2500 20 --regions chrI --fit-mode MAP --model-type $model $fit_time_arg &
 
     done
 done

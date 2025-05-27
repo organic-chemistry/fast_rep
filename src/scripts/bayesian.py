@@ -50,7 +50,7 @@ def fit_origins(
     # Origin detection parameters
     smoothv: int = typer.Option(11, help="Smoothing window size for origin detection"),
     min_dist_ori: float = typer.Option(1.5, help="Minimum distance between origins (kb)"),
-    expected_dist_ori: float = typer.Option(30.0, help="expected distance between origins (kb)"),
+    expected_dist_ori: float = typer.Option(20.0, help="expected distance between origins (kb)"),
     ori_from_bed: float = typer.Option(None, help="bed file where to take ori"),
     signal_ori_from_bed: float = typer.Option(None, help="signal_to position ori in bed file"),
 

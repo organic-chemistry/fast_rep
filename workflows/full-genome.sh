@@ -19,7 +19,7 @@ for model in Weibull Exponential; do
             output_file="full-genome/Laplace-${model}_${fit_time}_${chr}_bayesian.bed"
 
             # Run the bayesian command with the current parameters
-            echo bayesian data/from_nfs_smv11.bed "$output_file" 2500 20 \
+            bayesian data/from_nfs_smv11.bed "$output_file" 2500 20 \
                 --fit-mode Laplace \
                 --model-type "$model" \
                 $fit_time_arg \

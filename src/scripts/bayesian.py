@@ -50,7 +50,9 @@ def fit_origins(
     # Origin detection parameters
     smoothv: int = typer.Option(11, help="Smoothing window size for origin detection"),
     min_dist_ori: float = typer.Option(1.5, help="Minimum distance between origins (kb)"),
-    expected_dist_ori: float = typer.Option(20.0, help="expected distance between origins (kb)"),
+    expected_dist_ori: float = typer.Option(30.0, help="expected distance between origins (kb)"),
+    ori_from_bed: float = typer.Option(None, help="bed file where to take ori"),
+    signal_ori_from_bed: float = typer.Option(None, help="signal_to position ori in bed file"),
 
     min_rfd_increase: float = typer.Option(
         0.1, 
@@ -60,7 +62,7 @@ def fit_origins(
     # Model fitting parameters
     prior_lambda: float = typer.Option(2.0, 
                                        help="Prior variance for lambda parameter in S phase relation-ship, the bigger, the stronger the origin"),
-    prior_extra_t: float = typer.Option(2.0,
+    prior_extra_t: float = typer.Option(20.0,
                                          help="Prior variance for extra time in S phase relation-ship, the bigger , the smaller the delay"),
     noise: float = typer.Option(None, help="Add noise on synthetic data"),
 
@@ -151,11 +153,11 @@ def fit_origins(
             else:
                 smth_rfd = smooth(RFD[key]["signals"],smoothv)
 
-
         xis,delta_v,vals=find_ori_position(data={"rfd":smth_rfd,"positions":positions},
                                            min_dist_ori=min_dist_ori * 1000,
                                             smoothv=smoothv,
                                             min_rfd_increase_by_kb=0) 
+            
 
 
         pos_to_compute,data = convert_RFD_delta_MRT(positions,GT,speed=fork_speed,resolution=resolution,delta=delta,measurement_type=measurement_type)
@@ -166,7 +168,8 @@ def fit_origins(
             sigma = np.zeros_like(data)+noise/delta**0.5
         else:
             sigma = smooth(std_RFD,delta)[::delta]
-
+            print(sigma)
+            print(np.mean(sigma))
 
         #convert data
         
@@ -245,6 +248,7 @@ def fit_origins(
         signals = {"GT":GT,
                     "is_ori" + extra:is_ori,
                     "lambdai" + extra: fitted_lambda,
+                    "delay":fitted_delay,
                     "theo_rfd" + extra: rfd,
                     "theo_mrt" + extra: mrtr}
         

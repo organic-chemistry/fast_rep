@@ -2,6 +2,7 @@
 
 # Define the chromosomes
 chromosomes=(chrI chrII chrIII chrIV chrV chrVI chrVII chrVIII chrIX chrX chrXI chrXII chrXIII chrXIV chrXV chrXVI)
+root="../"
 
 # Loop over each model and fit_time combination
 for model in Weibull Exponential; do
@@ -18,7 +19,7 @@ for model in Weibull Exponential; do
             output_file="full-genome/Laplace-${model}_${fit_time}_${chr}_bayesian.bed"
 
             # Run the bayesian command with the current parameters
-            bayesian data/from_nfs_smv11.bed "$output_file" 2500 20 \
+            echo bayesian data/from_nfs_smv11.bed "$output_file" 2500 20 \
                 --fit-mode Laplace \
                 --model-type "$model" \
                 $fit_time_arg \

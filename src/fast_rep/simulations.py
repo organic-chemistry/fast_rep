@@ -2,6 +2,7 @@ import jax
 import jax.numpy as jnp
 from jax import random,jit
 from functools import partial
+import numpy as np
 
 def draw_exponential(key, times):
     # Generate exponential samples with the same shape as times
@@ -91,23 +92,29 @@ def compute_mrt_rfd_efficiency(T, v):
     
     return mrt, rfd, position_efficiency
 
+#@partial(jax.jit,static_argnames=["distribution","n_sim"])
+def sim(n_sim, kis,tis, v, distribution="Exponential"):
+    if np.any(kis) == 0:
+        raise "kis should have non zero value (set a low background) "
+    
+    return sim_safe(n_sim, 1/kis,tis, v, distribution=distribution)
+
+
 @partial(jax.jit,static_argnames=["distribution","n_sim"])
-def sim(n_sim, kis, v, distribution="Exponential", extra_t=jnp.zeros(0)):
+def sim_safe(n_sim, kis,tis, v, distribution="Exponential"):
     # Input validation
-    if len(extra_t) and len(extra_t) != len(kis):
-        raise ValueError("extra_t length must match kis")
-    n_origins = len(kis)
-    if len(extra_t) == 0:
-        extra_t = jnp.zeros(n_origins)
-        
+   
     master_key = random.PRNGKey(0)
     sim_keys = random.split(master_key, n_sim)
     
+
     # Draw the scaled realizations
     if distribution == "Exponential":
         time_scaled = jax.vmap(draw_exponential_scaled, in_axes=(0, None))(sim_keys, kis)
     else:
         time_scaled = jax.vmap(draw_weibull_scaled, in_axes=(0, None, None))(sim_keys, kis, 2.0)
+
+    time_scaled += tis
     
     # Apply our enhanced function that also computes efficiency
     MRTs_RFDs_Efficiencies = jax.vmap(lambda x: compute_mrt_rfd_efficiency(x, v), in_axes=0)(time_scaled)
@@ -120,5 +127,5 @@ def sim(n_sim, kis, v, distribution="Exponential", extra_t=jnp.zeros(0)):
         "MRT_time": jnp.mean(MRTs, axis=0),
         "RFD": jnp.mean(RFDs, axis=0),
         "observed_efficiencies": observed_efficiencies,
-        "mean_observed_efficiency": jnp.mean(observed_efficiencies)
+        "mean_observed_efficiency": jnp.mean(observed_efficiencies,axis=0)
     }

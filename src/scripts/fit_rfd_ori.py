@@ -53,13 +53,15 @@ def fit_origins(
         0.1, 
         help="Minimum RFD increase per kb to detect origin"
     ),
-    
+    ori_from_bed: float = typer.Option(None, help="bed file where to take ori"),
+    signal_ori_from_bed: float = typer.Option(None, help="signal_to position ori in bed file"),
     # Model fitting parameters
     prior_lambda: float = typer.Option(2.0, help="Prior variance for lambda parameter in S phase relation-ship"),
-    prior_extra_t: float = typer.Option(5.0, help="Prior variance for extra time in S phase relation-ship"),
+    prior_extra_t: float = typer.Option(20.0, help="Prior variance for extra time in S phase relation-ship"),
     fit_mode: Annotated[str, typer.Option(click_type=click.Choice(["MAP","Laplace","ADVI"]),
                                             help="Type of fitting")
                                             ] = "Laplace" ,
+
                 
     prior_qis: float = typer.Option(None, help="Prior variance for qis parameters"),
     #model_type: Annotated[str, typer.Option(click_type=click.Choice(['1PL', '2PL', '3PL']))] = '1PL' , 
@@ -96,6 +98,11 @@ def fit_origins(
                                                     column_specs=["RFD","std_RFD","smth_RFD"])
     
     resolution *= 1000 # in bp 
+
+    if ori_from_bed != None:
+        pos_ori, _, _ = load_muli_from_bedGraph(bedgraph_file,
+                                                    regions_str,
+                                                    column_specs=[signal_ori_from_bed])
     
     
     print(RFD)
@@ -121,13 +128,17 @@ def fit_origins(
         positions = RFD[key]["start"]
         
         # Detect candidate origins
-        xis,delta_v,vals = find_ori_position(
-            data={"rfd":smth_rfd,"positions":positions},
-            smoothv=smoothv,
-            min_dist_ori=int(min_dist_ori * 1000),
-            min_rfd_increase_by_kb=min_rfd_increase
-        )
+        if ori_from_bed is None:
 
+            xis,delta_v,vals = find_ori_position(
+                data={"rfd":smth_rfd,"positions":positions},
+                smoothv=smoothv,
+                min_dist_ori=int(min_dist_ori * 1000),
+                min_rfd_increase_by_kb=min_rfd_increase
+            )
+        else:
+            xis =  pos_ori[key]["start"][pos_ori[key]["signals"][signal_ori_from_bed]]
+    
 
         pos_to_compute,data = convert_RFD_delta_MRT(positions,rfd,
                                                     speed=fork_speed,
@@ -195,6 +206,7 @@ def fit_origins(
 
         return  key, {"lambdai": fitted_lambda,
                       "is_ori":is_ori,
+                      "delay":fitted_delay,
                       "original_rfd": RFD[key]["signals"]["RFD"],
                       "theo_rfd": rfd,
                       "theo_mrt": mrtr}

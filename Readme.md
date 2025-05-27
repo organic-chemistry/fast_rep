@@ -59,14 +59,14 @@ see [workflows/generate-synthetic-data.sh](generate-synthetic-data.sh) for the c
 
 ```bash
 #first fit the experimental data to produce a synthetic rfd relevant to yeast forkspeed 2500 bp/min S-phase 20 minutes
-mode=MAP
+mode=Laplace
 model="Weibull"
 
 fit_rfd_ori data/from_nfs_smv11.bed synthetic/chr1_fit.bed 2500 20 --regions chrI --fit-mode $mode --model-type $model --fit-time 
 
 #visualisation of the fit:
 visu_bed --chromosome chrI --start 0 --end 249000 --blocks "synthetic/chr1_fit.bed:original_rfd,synthetic/chr1_fit.bed:theo_rfd" --output compare.html
-#visu firefor compare.html
+#visu firefox compare.html
 ```
 
 Bayesian fitting of the synthetic data.

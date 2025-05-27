@@ -7,7 +7,7 @@ from fast_rep.math_mod.loop_mrt import compute_updates
 from fast_rep.math_mod.conv_mrt import compute_updates_conv
 from fast_rep.math_mod.compute_rfd import compute_derivatives
 from fast_rep.simulations import sim
-from fast_rep.math_mod.compute_mrt_at_pos import compute_mrt_exp,compute_mrt_weibull
+from fast_rep.math_mod.compute_mrt_at_pos import compute_mrt_exp,compute_mrt_weibull,compute_E_weibull,compute_E_exp
 
 
 parallel=False
@@ -17,6 +17,9 @@ if parallel:
     updates = parallel_compute_updates
 else:
     updates = compute_updates
+
+
+
 
 @partial(jax.jit,static_argnames=["max_n","sum_by_map"])
 def compute_mrt(lambdai, max_n, v, tolerance=1e-4,sum_by_map=True):
@@ -73,3 +76,11 @@ def compute_mrt_and_derivatives_pos(pos_to_compute,Lambda, extra_t, xis, v, mode
 
     derivative = compute_derivatives(mrt, v, method, shift,resolution=resolution)
     return mrt, derivative
+
+def compute_E(Lambda, extra_t, xis, v, model="Exponential"):
+    if model == "Exponential":
+        return compute_E_exp(Lambda, extra_t, xis, v)
+
+    else:
+        return compute_E_weibull(Lambda, extra_t, xis, v)
+

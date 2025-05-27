@@ -62,6 +62,67 @@ def compute_mrt_exp(pos_to_compute,Lambda, extra_t, xis, v):
     
     return mrt
 
+def compute_E_exp(Lambda, extra_t, xis, v):
+    """
+    Vectorized MRT calculation using JAX
+    
+    Parameters:
+    pos_to_compute (jnp.ndarray): Positions to compute MRT at (1D) [n_positions]
+    Lambda (jnp.ndarray): Array of λ values (1D) [n_origins]
+    extra_t (jnp.ndarray): Array of extra times (1D) [n_origins]
+    xis (jnp.ndarray): Origin positions (1D) [n_origins]
+    v (float): Velocity
+    
+    Returns:
+    jnp.ndarray: MRT values at requested positions [n_positions]
+    """
+    # Compute arrival times for all positions and origins
+    #print(xis[None, :].shape,pos_to_compute[:, None].shape)
+    pos_to_compute = xis
+
+    delta_pos = xis[None, :] - pos_to_compute[:, None]
+    arrival_time = jnp.abs(delta_pos) / v + extra_t[None, :]
+    
+    # Sort arrival times and get indices
+    sorted_indices = jnp.argsort(arrival_time, axis=1)
+    
+    # Gather sorted values
+    sorted_t = jnp.take_along_axis(arrival_time, sorted_indices, axis=1)
+    sorted_lambda = jnp.take_along_axis(Lambda[None, :], sorted_indices, axis=1)
+    
+
+    start_i = jnp.array([jnp.argmax(sorted_indices[ori]==ori) for ori in range(len(xis))])
+
+    # Create shifted version of sorted times for t_{i+1}
+    
+    
+    # Compute cumulative sums
+    Slambda = jnp.cumsum(sorted_lambda, axis=1)
+    Cum_ti = jnp.cumsum(sorted_lambda * sorted_t, axis=1)
+    
+    # Calculate exponents
+    sum_i = Slambda[:,:-1] * sorted_t[:,:-1] - Cum_ti[:,:-1]
+    #sum_i = Slambda[:,:-1] * sorted_t[:,:-1] - Cum_ti[:,:-1]
+
+    
+    delta = Slambda[:,:-1] * (sorted_t[:,1:] -  sorted_t[:,:-1] )
+    # Compute delta terms using log-space operations
+
+    #log_term = -sum_i + jnp.log(-jnp.expm1(-delta)) - jnp.log(Slambda[:,:-1])
+    safe_term = np.array(compute_delta_mrt(sum_i,delta,Slambda[:,:-1])[0])
+
+    # Handle special cases where delta is large
+
+    #safe_term = jnp.exp(log_term)
+
+       
+    # Sum terms and add first arrival time
+ 
+    for i in range(len(xis)):
+        safe_term[i,:start_i[i]] = 0 
+    
+    return jnp.nansum(safe_term, axis=1) * Lambda
+
 
 
 prev_sorted_indices = None
@@ -107,6 +168,56 @@ def compute_mrt_weibull_cached(Lambda, extra_t,delta_pos_over_v, prev_extra_t, p
     return compute_mrt_fast_weibull(sorted_indices,arrival_time,Lambda),extra_t,sorted_indices
 
 
+def compute_E_weibull(Lambda, extra_t, xis, v):
+    
+    pos_to_compute = xis
+    delta_pos = xis[None, :] - pos_to_compute[:, None]
+    arrival_time = jnp.abs(delta_pos) / v + extra_t[None, :]
+    
+    # Sort arrival times and get indices
+    sorted_indices = np.argsort(arrival_time, axis=1)
+    #sorted_indices = jnp.arange(len(extra_t))[None,:] # jnp.argsort(arrival_time, axis=1)
+
+    sorted_t = jnp.take_along_axis(arrival_time, sorted_indices, axis=1)
+    sorted_lambda_2 = jnp.take_along_axis(Lambda[None, :]**2, sorted_indices, axis=1)
+    
+    #sorted_lambda_2 += 1e-7
+    # Compute cumulative sums
+    
+    start_i = jnp.array([jnp.argmax(sorted_indices[ori]==ori) for ori in range(len(xis))])
+    #print(start_i)
+        
+        
+    
+    sorted_t = jnp.take_along_axis(arrival_time, sorted_indices, axis=1)
+    sorted_lambda_2 = jnp.take_along_axis(Lambda[None, :]**2, sorted_indices, axis=1)
+    
+    #sorted_lambda_2 += 1e-7
+    # Compute cumulative sums
+    One = jnp.cumsum(sorted_lambda_2, axis=1)
+    T = jnp.cumsum(sorted_lambda_2 * sorted_t, axis=1)
+    T2 = jnp.cumsum(sorted_lambda_2 * sorted_t ** 2, axis=1)
+
+    Tm = T/(One)
+    rone = One**0.5
+    sorted_t = jnp.concatenate([sorted_t,jnp.zeros(len(xis))[:,None] + 10000],axis=1)
+    #print(One)
+    #Here either add to sorted_t a new line with heigh value so that erf==1
+    Fi =   1/rone* jnp.exp(T**2/One-T2) 
+    Ii = jnp.pi **0.5/2 * (erf(rone * (sorted_t[:,1:]   - Tm)) - erf(rone * (sorted_t[:,:-1]  - Tm)))
+    complete = 2 * Fi * ( (Tm - extra_t[:,None] ) * Ii + 1/(2*rone) * \
+                         ( jnp.exp(-One * (sorted_t[:,:-1]  - Tm)**2) - jnp.exp(-One * (sorted_t[:,1:]   - Tm)**2) ))
+    
+    complete = np.array(complete)
+
+
+
+
+    #full[:,0] += sorted_t[:, 0]
+    for i in range(len(xis)):
+        complete[i,:start_i[i]] = 0 
+    #print(complete)
+    return np.nansum(complete,axis=1) * Lambda ** 2
 
 
 

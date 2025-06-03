@@ -70,7 +70,7 @@ def load_RFD(root="data/NFS_WTx10/BT_P2_WTx10_refBT1mono_", minimum_obs=20,smv=1
     return RFD, mean_RFD, Cov_RFD, std_RFD,Pos,Neg
 
 
-def find_ori_position(data={},smoothv=11,min_dist_ori=30,min_rfd_increase_by_kb=0.1):
+def find_ori_position(data={},smoothv=11,min_dist_ori=30,min_rfd_increase_by_kb=0.1,on_heights=False):
     if smoothv % 2 == 0:
         raise "smoothv must be impair"
 
@@ -85,7 +85,12 @@ def find_ori_position(data={},smoothv=11,min_dist_ori=30,min_rfd_increase_by_kb=
     resolution = resolution[0]
     delta *= 1000/resolution  # to have increase in rfd/kb
     #p2=plot(delta)
-    pks, vals = find_peaks(delta,distance=min_dist_ori/resolution,prominence=min_rfd_increase_by_kb)
+    if on_heights:
+        pks, vals = find_peaks(delta,distance=min_dist_ori/resolution,
+                           height=min_rfd_increase_by_kb)
+    else:
+        pks, vals = find_peaks(delta,distance=min_dist_ori/resolution,
+                           prominence=min_rfd_increase_by_kb)
     #pks,delta
     return data["positions"][pks],delta,vals
 

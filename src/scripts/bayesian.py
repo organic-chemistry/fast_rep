@@ -93,6 +93,7 @@ def fit_origins(
         None,
         help="File containing initial starting points for optimization"
     ),
+    on_heights: bool = typer.Option(False, help="select the peaks on heigh threshold instead of prominence"),
     parallel: bool = typer.Option(False, help="Enable parallel processing"),
     verbose: bool = typer.Option(True, help="Show detailed output"),
     fit_time: bool = typer.Option(False, help="fit a delay for origin activation"),
@@ -156,12 +157,16 @@ def fit_origins(
         xis,delta_v,vals=find_ori_position(data={"rfd":smth_rfd,"positions":positions},
                                            min_dist_ori=min_dist_ori * 1000,
                                             smoothv=smoothv,
-                                            min_rfd_increase_by_kb=0) 
+                                            min_rfd_increase_by_kb=0,
+                                            on_heights=on_heights) 
             
-
+        if on_heights:
+            peaks = vals['peak_heights']
+        else:
+            peaks = vals["prominences"]
 
         pos_to_compute,data = convert_RFD_delta_MRT(positions,GT,speed=fork_speed,resolution=resolution,delta=delta,measurement_type=measurement_type)
-        Ori_pos = extract_most_potent_ori_around_expected_value(xis,vals["prominences"],expected_n_ori,
+        Ori_pos = extract_most_potent_ori_around_expected_value(xis,peaks,expected_n_ori,
                                                                 max_factor_expected=2.5,
                                                                 min_factor_expected=0.7)
         if noise != None:
